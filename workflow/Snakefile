@@ -1,4 +1,222 @@
-# Main entrypoint of the workflow. 
-# Please follow the best practices: 
-# https://snakemake.readthedocs.io/en/stable/snakefiles/best_practices.html,
-# in particular regarding the standardized folder structure mentioned there. 
+# The main entry point of your workflow for PF15 Small RNA
+# After configuring, running snakemake -n in a clone of this repository should
+# successfully execute a dry-run of the workflow.
+
+import pandas as pd
+from snakemake.utils import validate, min_version
+
+##### set minimum snakemake version #####
+min_version("8.10")
+
+
+##### load config and sample sheets #####
+configfile: "config/config.yaml"
+
+
+validate(config, schema="schemas/config.schema.yaml")
+
+
+# samples = pd.read_table(config["samples"]).set_index("sample_name", drop=False)
+# validate(samples, schema="schemas/samples.schema.yaml")
+#
+# units = pd.read_table(config["units"], dtype=str).set_index(
+#     ["sample_name", "unit_name"], drop=False
+# )
+# units.index = units.index.set_levels(
+#     [i.astype(str) for i in units.index.levels]
+# )  # enforce str in index
+# validate(units, schema="schemas/units.schema.yaml")
+#
+#
+# wildcard_constraints:
+#     contrast="[^\/]*",
+#
+#
+# # ruleorder: get_fasta > diffexp_windows
+#
+#
+##### target rules #####
+rule all:
+    input:
+        f"{config['reference']['fasta']}.intergenic_regions.bed",
+        f"{config['reference']['fasta']}.intergenic_regions.fasta",
+
+
+#     input:
+#         "results/qc/multiqc.html",
+#         expand(
+#             "results/star/{unit.sample_name}-{unit.unit_name}/Aligned.sortedByCoord.out.bam",
+#             unit=units.itertuples(),
+#         ),
+#         bigwig=expand(
+#             "results/signal/{unit.sample_name}-{unit.unit_name}-{strand}-{reads}.bw",
+#             unit=units.itertuples(),
+#             strand=("forward", "reverse"),
+#             reads=("unique", "all"),
+#         ),
+#         counts=expand(
+#             "results/counts/{unit.sample_name}-{unit.unit_name}-{strand}.txt",
+#             unit=units.itertuples(),
+#             strand=("forward", "reverse"),
+#         ),
+#         diffexp=expand(
+#             "results/diffexp/{contrast}/mapped_{strand}/differential_expression_report.nb.html",
+#             strand=("forward", "reverse"),
+#             contrast=config["diffexp"]["contrasts"],
+#         ),
+#         diffexp_windows=expand(
+#             "results/diffexp_windows/{contrast}/differential_expression_windows_report.nb.html",
+#             contrast=config["diffexp"]["contrasts"],
+#         ),
+#         diffexp_significant_regions=expand(
+#             "results/diffexp_significant_regions/{contrast}/differential_expression_report.nb.html",
+#             contrast=config["diffexp"]["contrasts"],
+#         ),
+#         blast=expand(
+#             "results/diffexp_significant_regions/{contrast}/significant_regions.blast.txt",
+#             contrast=config["diffexp"]["contrasts"],
+#         ),
+#         blast_grouped=expand(
+#             "results/diffexp_significant_regions/{contrast}/significant_regions.blast.length-{length}.grouped.txt",
+#             length=config["params"]["blast"]["min_length"],
+#             contrast=config["diffexp"]["contrasts"],
+#         ),
+#         significant_regions_with_celegans_genes=expand(
+#             "results/diffexp_significant_regions/{contrast}/results_significant_regions_celegans_genes.tsv",
+#             contrast=config["diffexp"]["contrasts"],
+#         ),
+#         mappability=expand(
+#             "{fasta}.genmap.mappability.length-{length}.bedgraph",
+#             fasta=config["reference"]["fasta"],
+#             length=config["reference"]["mappability_length"],
+#         ),
+#
+#
+# rule all_rename:
+#     input:
+#         fastq=expand(
+#             "results/fastq/{unit.sample_name}-{unit.unit_name}.fastq.gz",
+#             unit=units.itertuples(),
+#         ),
+#
+#
+# rule all_trim:
+#     input:
+#         qc=expand(
+#             "results/trimmed/{unit.sample_name}-{unit.unit_name}.qc.txt",
+#             unit=units.itertuples(),
+#         ),
+#
+#
+# rule all_signals:
+#     input:
+#         bigwig=expand(
+#             "results/signal/{unit.sample_name}-{unit.unit_name}-{strand}-{reads}.bw",
+#             unit=units.itertuples(),
+#             strand=("forward", "reverse"),
+#             reads=("unique", "all"),
+#         ),
+#
+#
+# rule all_gene_counts:
+#     input:
+#         counts=expand(
+#             "results/counts/{unit.sample_name}-{unit.unit_name}-{strand}.txt",
+#             unit=units.itertuples(),
+#             strand=("forward", "reverse"),
+#         ),
+#
+#
+# rule all_window_counts:
+#     input:
+#         expand(
+#             "results/window_counts/{unit.sample_name}-{unit.unit_name}.txt",
+#             unit=units.itertuples(),
+#         ),
+#
+#
+# rule all_counts_significant_regions:
+#     input:
+#         expand(
+#             "results/counts_significant_regions/{contrast}/{unit.sample_name}-{unit.unit_name}.txt",
+#             unit=units.itertuples(),
+#             contrast=config["diffexp"]["contrasts"],
+#         ),
+#
+#
+# rule all_diffexp_genes:
+#     input:
+#         diffexp=expand(
+#             "results/diffexp/{contrast}/mapped_{strand}/differential_expression_report.nb.html",
+#             strand=("forward", "reverse"),
+#             contrast=config["diffexp"]["contrasts"],
+#         ),
+#
+#
+# rule all_significant_regions:
+#     input:
+#         significant_regions=expand(
+#             "results/diffexp_windows/{contrast}/significant_regions_combined.{format}",
+#             contrast=config["diffexp"]["contrasts"],
+#             format=["gtf", "fasta"],
+#         ),
+#         diffexp_windows_report=expand(
+#             "results/diffexp_windows/{contrast}/differential_expression_windows_report.nb.html",
+#             contrast=config["diffexp"]["contrasts"],
+#         ),
+#
+#
+# rule all_diffexp_significant_regions:
+#     input:
+#         diffexp=expand(
+#             "results/diffexp_significant_regions/{contrast}/differential_expression_report.nb.html",
+#             contrast=config["diffexp"]["contrasts"],
+#         ),
+#
+#
+# rule all_blast:
+#     input:
+#         expand(
+#             "results/diffexp_significant_regions/{contrast}/significant_regions.blast.all.txt",
+#             contrast=config["diffexp"]["contrasts"],
+#         ),
+#         expand(
+#             "results/diffexp_significant_regions/{contrast}/significant_regions.blast.length-{length}.txt",
+#             length=config["params"]["blast"]["min_length"],
+#             contrast=config["diffexp"]["contrasts"],
+#         ),
+#         expand(
+#             "results/diffexp_significant_regions/{contrast}/significant_regions.blast.length-{length}.grouped.txt",
+#             length=config["params"]["blast"]["min_length"],
+#             contrast=config["diffexp"]["contrasts"],
+#         ),
+#         expand(
+#             "results/diffexp_significant_regions/{contrast}/results_significant_regions_celegans_genes.tsv",
+#             contrast=config["diffexp"]["contrasts"],
+#         ),
+#
+#
+# ##### setup report #####
+#
+#
+# report: "report/workflow.rst"
+#
+#
+# ##### load rules #####
+#
+#
+# include: "rules/trim.smk"
+# include: "rules/fastqc.smk"
+include: "rules/genome.smk"
+
+
+# include: "rules/align.smk"
+# include: "rules/signal.smk"
+# include: "rules/counts.smk"
+# include: "rules/window_counts.smk"
+# include: "rules/counts_significant_regions.smk"
+# include: "rules/diffexp.smk"
+# include: "rules/diffexp_windows.smk"
+# include: "rules/diffexp_significant_regions.smk"
+# include: "rules/blast.smk"
+# include: "rules/multiqc.smk"

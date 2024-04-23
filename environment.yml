@@ -1,0 +1,9 @@
+name: pf15-smallrna
+channels:
+    - conda-forge
+    - bioconda
+    - nodefaults
+dependencies:
+    - snakemake>=8.10
+    - snakefmt>=0.10
+    - drmaa>=0.7.9

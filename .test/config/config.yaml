@@ -1,0 +1,52 @@
+# This file should contain everything to configure the workflow on a global scale.
+# In case of sample based data, it should be complemented by a samples.tsv file that contains
+# one row per sample. It can be parsed easily via pandas.
+
+samples: config/samples.tsv
+
+units: config/units.tsv
+
+reference:
+  fasta: "resources/test.fasta"
+  gff: "resources/test.gff"
+  gtf: "resources/test.gtf"
+  celegans: "resources/c_elegans.PRJNA13758.WS282.mRNA_transcripts.fa.gz"
+  mappability_length: "60"
+  # https://hgdownload.soe.ucsc.edu/goldenPath/ce11/bigZips/ce11.fa.gz
+
+diffexp:
+  contrasts:
+    "media_diluted_vs_undiluted":
+      design: "~ media"
+      factor: "media"
+      numerator: "diluted"
+      denominator: "undiluted"
+  outliers:
+    - ""
+params:
+  cutadapt:
+    adapters: "--adapter AGATCGGAAGAG"
+    extra: "--quality-cutoff 20 --minimum-length 10"
+  # --genomeSAindexNbases =  min(14, log2(GenomeLength)/2 - 1)
+  # pf15 genome length 6992440
+  star_index: "--genomeSAindexNbases 10"
+  star: "--alignIntronMax 1"
+  feature_counts:
+    feature_type: "transcript"
+    group_attribute: "gene_id"
+    extra: "--extraAttributes gene_name"
+  genome_window_counts:
+    window_size: "10"
+    feature_counts:
+      feature_type: "transcript"
+      group_attribute: "gene_id"
+      extra: ""
+  significant_region_counts:
+    feature_type: "exon"
+    group_attribute: "gene_id"
+    extra: ""
+  blast:
+    blastn: ""
+    min_length: "16"
+  genmap: "--errors 2"
+  genmap_index: ""

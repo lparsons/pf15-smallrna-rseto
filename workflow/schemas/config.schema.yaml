@@ -1,0 +1,138 @@
+$schema: "http://json-schema.org/draft-06/schema#"
+
+description: snakemake configuration file
+
+type: object
+
+properties:
+
+  samples:
+    type: string
+
+  units:
+    type: string
+
+  reference:
+    type: object
+    properties:
+      fasta:
+        type: string
+      gff:
+        type: string
+      gtf:
+        type: string
+      celegans:
+        type: string
+    required:
+      - fasta
+      - gtf
+      - celegans
+
+  diffexp:
+    type: object
+    properties:
+      contrasts:
+        type: object
+        additionalProperties:
+          type: object
+          properties:
+            design:
+              type: string
+            factor:
+              type: string
+            numerator:
+              type: string
+            denominator:
+              type: string
+          required:
+            - design
+            - factor
+            - numerator
+            - denominator
+      outliers:
+        type: array
+      required:
+        - design
+        - contrasts
+
+  params:
+    type: object
+    properties:
+      cutadapt:
+        type: object
+        properties:
+          adapters:
+            type: string
+          extra:
+            type: string
+        required:
+          - adapters
+          - extra
+      star:
+        type: string
+      star_index:
+        type: string
+      feature_counts:
+        type: object
+        properties:
+          feature_type:
+            type: string
+          group_attribute:
+            type: string
+          extra:
+            type: string
+        required:
+          - feature_type
+          - group_attribute
+          - extra
+      genome_window_counts:
+        type: object
+        properties:
+          window_size:
+            type: string
+        feature_counts:
+          type: object
+          properties:
+            feature_type:
+              type: string
+            group_attribute:
+              type: string
+            extra:
+              type: string
+          required:
+            - feature_type
+            - group_attribute
+            - extra
+        required:
+          - window_size
+          - feature_counts
+      blast:
+        type: object
+        properties:
+          blastn:
+            type: string
+          min_length:
+            type: string
+        required:
+          - blastn
+          - min_length
+      genmap:
+        type: string
+      genmap_index:
+        type: string
+    required:
+      - cutadapt
+      - star
+      - star_index
+      - feature_counts
+      - genome_window_counts
+      - blast
+      - genmap
+      - genmap_index
+
+required:
+  - samples
+  - units
+  - reference
+  - diffexp
+  - params
