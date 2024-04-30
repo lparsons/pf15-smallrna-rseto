@@ -1,3 +1,16 @@
+rule celegans_transcripts:
+    input:
+        storage(config["reference"]["celegans"]),
+    output:
+        temp("results/celegans-transcripts.fasta"),
+    log:
+        "logs/unzip-celegans.log",
+    conda:
+        "../envs/coreutils.yaml"
+    shell:
+        "gunzip --stdout --decompress --force {input:q} > {output:q} 2> {log:q}"
+
+
 # rule star_index:
 #     input:
 #         fasta=config["reference"]["fasta"],
@@ -35,7 +48,7 @@ rule samtools_faidx:
     params:
         "",  # optional params string
     log:
-        "logs/samtools_faidx_genome.log",
+        "logs/samtools-faidx-genome.log",
     wrapper:
         "v3.0.2/bio/samtools/faidx"
 
@@ -127,7 +140,7 @@ rule intergenic_regions:
         fai=f"{config['reference']['fasta']}.fai",
         gtf=config["reference"]["gtf"],
     output:
-        intergenic_regions=f"{config['reference']['fasta']}.intergenic_regions.bed",
+        intergenic_regions=f"{config['reference']['fasta']}.intergenic-regions.bed",
     conda:
         "../envs/bedtools.yaml"
     log:

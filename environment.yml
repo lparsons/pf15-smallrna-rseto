@@ -6,4 +6,4 @@ channels:
 dependencies:
     - snakemake>=8.10
     - snakefmt>=0.10
-    - drmaa>=0.7.9
+    - snakemake-storage-plugin-http>=0.2.3

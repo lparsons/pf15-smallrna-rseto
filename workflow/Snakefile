@@ -38,8 +38,28 @@ validate(config, schema="schemas/config.schema.yaml")
 ##### target rules #####
 rule all:
     input:
-        f"{config['reference']['fasta']}.intergenic_regions.bed",
-        f"{config['reference']['fasta']}.intergenic_regions.fasta",
+        expand(
+            "results/homology/blast-pf15-intergenic-regions-celegans-transcripts-{min_length}-bp-{min_pct_id}-pctid.tsv",
+            min_length=config["params"]["blast"]["min_length"],
+            min_pct_id=config["params"]["blast"]["min_pct_id"],
+        ),
+
+
+rule all_genome:
+    input:
+        f"{config['reference']['fasta']}.intergenic-regions.bed",
+        f"{config['reference']['fasta']}.intergenic-regions.fasta",
+        "results/homology/blast-pf15-intergenic-regions-celegans-transcripts.tsv",
+
+
+rule all_blast:
+    input:
+        "results/homology/blast-pf15-intergenic-regions-celegans-transcripts.tsv",
+        expand(
+            "results/homology/blast-pf15-intergenic-regions-celegans-transcripts-{min_length}-bp-{min_pct_id}-pctid.tsv",
+            min_length=config["params"]["blast"]["min_length"],
+            min_pct_id=config["params"]["blast"]["min_pct_id"],
+        ),
 
 
 #     input:
@@ -203,13 +223,8 @@ rule all:
 #
 #
 # ##### load rules #####
-#
-#
-# include: "rules/trim.smk"
 # include: "rules/fastqc.smk"
-include: "rules/genome.smk"
-
-
+# include: "rules/trim.smk"
 # include: "rules/align.smk"
 # include: "rules/signal.smk"
 # include: "rules/counts.smk"
@@ -218,5 +233,8 @@ include: "rules/genome.smk"
 # include: "rules/diffexp.smk"
 # include: "rules/diffexp_windows.smk"
 # include: "rules/diffexp_significant_regions.smk"
-# include: "rules/blast.smk"
 # include: "rules/multiqc.smk"
+
+
+include: "rules/genome.smk"
+include: "rules/blast.smk"
