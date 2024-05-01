@@ -15,17 +15,30 @@ properties:
   reference:
     type: object
     properties:
-      fasta:
-        type: string
-      gff:
-        type: string
-      gtf:
-        type: string
+      pf15:
+        type: object
+        properties:
+          fasta:
+            type: string
+          gff:
+            type: string
+          gtf:
+            type: string
+        required:
+          - fasta
+          - gtf
       celegans:
-        type: string
+        type: object
+        properties:
+          transcripts_fasta:
+            type: string
+          genome_gtf:
+            type: string
+        required:
+          - transcripts_fasta
+          - genome_gtf
     required:
-      - fasta
-      - gtf
+      - pf15
       - celegans
 
   diffexp:

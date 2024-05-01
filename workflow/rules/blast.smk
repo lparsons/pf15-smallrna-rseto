@@ -1,7 +1,7 @@
 rule blast_pf15_intergenic_celegans_transcripts:
     input:
         celegrans_transcripts="results/celegans-transcripts.fasta",
-        pf15_intergenic_regions=f"{config['reference']['fasta']}.intergenic-regions.fasta",
+        pf15_intergenic_regions=f"{config['reference']['pf15']['fasta']}.intergenic-regions.fasta",
     output:
         "results/homology/blast-pf15-intergenic-regions-celegans-transcripts.tsv",
     log:

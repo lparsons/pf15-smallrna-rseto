@@ -7,10 +7,13 @@ samples: config/samples.tsv
 units: config/units.tsv
 
 reference:
-  fasta: "resources/assembly.fasta"
-  gff: "resources/Pseudomonasfluorescens15.gff"
-  gtf: "resources/Pseudomonasfluorescens15.gtf"
-  celegans: "https://ftp.ebi.ac.uk/pub/databases/wormbase/parasite/releases/WBPS19/species/caenorhabditis_elegans/PRJNA13758/caenorhabditis_elegans.PRJNA13758.WBPS19.mRNA_transcripts.fa.gz"
+  pf15:
+    fasta: "resources/assembly.fasta"
+    gff: "resources/Pseudomonasfluorescens15.gff"
+    gtf: "resources/Pseudomonasfluorescens15.gtf"
+  celegans:
+    transcripts_fasta: "https://ftp.ebi.ac.uk/pub/databases/wormbase/parasite/releases/WBPS19/species/caenorhabditis_elegans/PRJNA13758/caenorhabditis_elegans.PRJNA13758.WBPS19.mRNA_transcripts.fa.gz"
+    genome_gtf: "https://ftp.ebi.ac.uk/pub/databases/wormbase/parasite/releases/WBPS19/species/caenorhabditis_elegans/PRJNA13758/caenorhabditis_elegans.PRJNA13758.WBPS19.canonical_geneset.gtf.gz"
   mappability_length: "60"
 
 diffexp:
