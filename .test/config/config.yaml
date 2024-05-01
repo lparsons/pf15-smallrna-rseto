@@ -10,7 +10,7 @@ reference:
   fasta: "resources/test.fasta"
   gff: "resources/test.gff"
   gtf: "resources/test.gtf"
-  celegans: "resources/c_elegans.PRJNA13758.WS282.mRNA_transcripts.fa.gz"
+  celegans: "https://ftp.ebi.ac.uk/pub/databases/wormbase/parasite/releases/WBPS19/species/caenorhabditis_elegans/PRJNA13758/caenorhabditis_elegans.PRJNA13758.WBPS19.mRNA_transcripts.fa.gz"
   mappability_length: "60"
   # https://hgdownload.soe.ucsc.edu/goldenPath/ce11/bigZips/ce11.fa.gz
 
@@ -48,5 +48,6 @@ params:
   blast:
     blastn: ""
     min_length: "16"
+    min_pct_id: "100"
   genmap: "--errors 2"
   genmap_index: ""

@@ -113,9 +113,12 @@ properties:
             type: string
           min_length:
             type: string
+          min_pct_id:
+            type: string
         required:
           - blastn
           - min_length
+          - min_pct_id
       genmap:
         type: string
       genmap_index:
