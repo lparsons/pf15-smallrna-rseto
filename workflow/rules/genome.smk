@@ -4,11 +4,37 @@ rule celegans_transcripts:
     output:
         temp("results/celegans-transcripts.fasta"),
     log:
-        "logs/unzip-celegans.log",
+        "logs/unzip-celegans-transcripts-fasta.log",
     conda:
         "../envs/coreutils.yaml"
     shell:
         "gunzip --stdout --decompress --force {input:q} > {output:q} 2> {log:q}"
+
+
+rule celegans_gtf:
+    input:
+        storage(config["reference"]["celegans"]["genome_gtf"]),
+    output:
+        temp("results/celegans-genes.gtf"),
+    log:
+        "logs/unzip-celegans-genome-gtf.log",
+    conda:
+        "../envs/coreutils.yaml"
+    shell:
+        "gunzip --stdout --decompress --force {input:q} > {output:q} 2> {log:q}"
+
+
+rule gtf_to_gene_transcripts:
+    input:
+        "results/celegans-genes.gtf",
+    output:
+        "results/celegans-genes-transcipts.tsv",
+    log:
+        "logs/celegans-gtf-to-genes-transcipts.log",
+    conda:
+        "../envs/coreutils.yaml"
+    shell:
+        'gffread {input:q} --table "@geneid, transcript_id" -o {output:q} 2> {log:q}'
 
 
 # rule star_index:
