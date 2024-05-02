@@ -66,6 +66,22 @@ rule annotate_homology:
         """
 
 
+rule filter_homology_by_gene:
+    input:
+        homologous_regions="results/homology/blast-pf15-intergenic-regions-celegans-transcripts-{minlen}-bp-{minpctid}-pctid-genes.sorted-col13.tsv",
+        gene_list="resources/{expression}-expressed-genes.sorted-col1.tsv",
+    output:
+        "results/homology/blast-pf15-intergenic-regions-celegans-transcripts-{minlen}-bp-{minpctid}-pctid-genes-expressed-{expression}.tsv",
+    log:
+        "logs/homology/blast-pf15-intergenic-regions-celegans-transcripts-{minlen}-bp-{minpctid}-pctid-genes-expressed-{expression}.log",
+    conda:
+        "../envs/coreutils.yaml"
+    shell:
+        """
+        LC_ALL=C join --header -1 1 -2 13 {input.gene_list:q} {input.homologous_regions:q} > {output:q} 2>> {log:q}
+        """
+
+
 # rule get_fasta:
 #    input:
 #        genome=config["reference"]["fasta"],

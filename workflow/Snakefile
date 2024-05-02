@@ -39,9 +39,10 @@ validate(config, schema="schemas/config.schema.yaml")
 rule all:
     input:
         expand(
-            "results/homology/blast-pf15-intergenic-regions-celegans-transcripts-{min_length}-bp-{min_pct_id}-pctid-genes.tsv",
+            "results/homology/blast-pf15-intergenic-regions-celegans-transcripts-{min_length}-bp-{min_pct_id}-pctid-genes-expressed-{expression}.tsv",
             min_length=config["params"]["blast"]["min_length"],
             min_pct_id=config["params"]["blast"]["min_pct_id"],
+            expression=["neuron", "neuron-germline"],
         ),
 
 
@@ -65,6 +66,12 @@ rule all_blast:
             "results/homology/blast-pf15-intergenic-regions-celegans-transcripts-{min_length}-bp-{min_pct_id}-pctid-genes.tsv",
             min_length=config["params"]["blast"]["min_length"],
             min_pct_id=config["params"]["blast"]["min_pct_id"],
+        ),
+        expand(
+            "results/homology/blast-pf15-intergenic-regions-celegans-transcripts-{min_length}-bp-{min_pct_id}-pctid-genes-expressed-{expression}.tsv",
+            min_length=config["params"]["blast"]["min_length"],
+            min_pct_id=config["params"]["blast"]["min_pct_id"],
+            expression=["neuron", "neuron-germline"],
         ),
 
 
