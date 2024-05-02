@@ -39,7 +39,7 @@ validate(config, schema="schemas/config.schema.yaml")
 rule all:
     input:
         expand(
-            "results/homology/blast-pf15-intergenic-regions-celegans-transcripts-{min_length}-bp-{min_pct_id}-pctid.tsv",
+            "results/homology/blast-pf15-intergenic-regions-celegans-transcripts-{min_length}-bp-{min_pct_id}-pctid-genes.tsv",
             min_length=config["params"]["blast"]["min_length"],
             min_pct_id=config["params"]["blast"]["min_pct_id"],
         ),
@@ -58,6 +58,11 @@ rule all_blast:
         "results/homology/blast-pf15-intergenic-regions-celegans-transcripts.tsv",
         expand(
             "results/homology/blast-pf15-intergenic-regions-celegans-transcripts-{min_length}-bp-{min_pct_id}-pctid.tsv",
+            min_length=config["params"]["blast"]["min_length"],
+            min_pct_id=config["params"]["blast"]["min_pct_id"],
+        ),
+        expand(
+            "results/homology/blast-pf15-intergenic-regions-celegans-transcripts-{min_length}-bp-{min_pct_id}-pctid-genes.tsv",
             min_length=config["params"]["blast"]["min_length"],
             min_pct_id=config["params"]["blast"]["min_pct_id"],
         ),

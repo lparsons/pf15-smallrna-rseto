@@ -30,9 +30,40 @@ rule filter_homology:
         "../envs/coreutils.yaml"
     shell:
         """
-       echo -e "qseqid\tsseqid\tpident\tlength\tmismatch\tgapopen\tqstart\tqend\tsstart\tsend\tevalue\tbitscore" > {output:q} 2> {log:q}
-       awk '$3 >= {wildcards.minpctid} && $4 >= {wildcards.minlen} {{print $0}}' {input:q} >> {output:q} 2>> {log:q}
-       """
+        echo -e "qseqid\tsseqid\tpident\tlength\tmismatch\tgapopen\tqstart\tqend\tsstart\tsend\tevalue\tbitscore" > {output:q} 2> {log:q}
+        awk '$3 >= {wildcards.minpctid} && $4 >= {wildcards.minlen} {{print $0}}' {input:q} >> {output:q} 2>> {log:q}
+        """
+
+
+rule sort_tsv_with_header:
+    input:
+        "{file}.tsv",
+    output:
+        "{file}.sorted-col{colnum}.tsv",
+    log:
+        "logs/{file}.sorted-col{colnum}.log",
+    conda:
+        "../envs/coreutils.yaml"
+    shell:
+        """
+        cat {input:q} | (read -r; printf "%s\n" "$REPLY"; LC_ALL=C sort -k {wildcards.colnum}b,{wildcards.colnum} ) > {output:q} 2> {log:q}
+        """
+
+
+rule annotate_homology:
+    input:
+        homologous_regions="results/homology/blast-pf15-intergenic-regions-celegans-transcripts-{minlen}-bp-{minpctid}-pctid.sorted-col2.tsv",
+        genes_transcripts="results/celegans-genes-transcipts.sorted-col2.tsv",
+    output:
+        "results/homology/blast-pf15-intergenic-regions-celegans-transcripts-{minlen}-bp-{minpctid}-pctid-genes.tsv",
+    log:
+        "logs/homology/blast-pf15-intergenic-regions-celegans-transcripts-{minlen}-bp-{minpctid}-pctid-genes.log",
+    conda:
+        "../envs/coreutils.yaml"
+    shell:
+        """
+        LC_ALL=C join --header -j2 {input.homologous_regions:q} {input.genes_transcripts:q} > {output:q} 2>> {log:q}
+        """
 
 
 # rule get_fasta:
