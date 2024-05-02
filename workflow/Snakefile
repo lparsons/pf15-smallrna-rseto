@@ -47,9 +47,10 @@ rule all:
 
 rule all_genome:
     input:
-        f"{config['reference']['fasta']}.intergenic-regions.bed",
-        f"{config['reference']['fasta']}.intergenic-regions.fasta",
+        f"{config['reference']['pf15']['fasta']}.intergenic-regions.bed",
+        f"{config['reference']['pf15']['fasta']}.intergenic-regions.fasta",
         "results/homology/blast-pf15-intergenic-regions-celegans-transcripts.tsv",
+        "results/celegans-genes-transcipts.tsv",
 
 
 rule all_blast:

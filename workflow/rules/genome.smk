@@ -1,14 +1,40 @@
 rule celegans_transcripts:
     input:
-        storage(config["reference"]["celegans"]),
+        storage(config["reference"]["celegans"]["transcripts_fasta"]),
     output:
         temp("results/celegans-transcripts.fasta"),
     log:
-        "logs/unzip-celegans.log",
+        "logs/unzip-celegans-transcripts-fasta.log",
     conda:
         "../envs/coreutils.yaml"
     shell:
         "gunzip --stdout --decompress --force {input:q} > {output:q} 2> {log:q}"
+
+
+rule celegans_gtf:
+    input:
+        storage(config["reference"]["celegans"]["genome_gtf"]),
+    output:
+        temp("results/celegans-genes.gtf"),
+    log:
+        "logs/unzip-celegans-genome-gtf.log",
+    conda:
+        "../envs/coreutils.yaml"
+    shell:
+        "gunzip --stdout --decompress --force {input:q} > {output:q} 2> {log:q}"
+
+
+rule gtf_to_gene_transcripts:
+    input:
+        "results/celegans-genes.gtf",
+    output:
+        "results/celegans-genes-transcipts.tsv",
+    log:
+        "logs/celegans-gtf-to-genes-transcipts.log",
+    conda:
+        "../envs/coreutils.yaml"
+    shell:
+        'gffread {input:q} --table "@geneid, transcript_id" -o {output:q} 2> {log:q}'
 
 
 # rule star_index:
@@ -42,9 +68,9 @@ rule celegans_transcripts:
 #
 rule samtools_faidx:
     input:
-        fasta=config["reference"]["fasta"],
+        fasta=config["reference"]["pf15"]["fasta"],
     output:
-        fai=f"{config['reference']['fasta']}.fai",
+        fai=f"{config['reference']['pf15']['fasta']}.fai",
     params:
         "",  # optional params string
     log:
@@ -137,10 +163,10 @@ rule samtools_faidx:
 #
 rule intergenic_regions:
     input:
-        fai=f"{config['reference']['fasta']}.fai",
-        gtf=config["reference"]["gtf"],
+        fai=f"{config['reference']['pf15']['fasta']}.fai",
+        gtf=config["reference"]["pf15"]["gtf"],
     output:
-        intergenic_regions=f"{config['reference']['fasta']}.intergenic-regions.bed",
+        intergenic_regions=f"{config['reference']['pf15']['fasta']}.intergenic-regions.bed",
     conda:
         "../envs/bedtools.yaml"
     log:
@@ -155,11 +181,11 @@ rule intergenic_regions:
 
 rule getfasta:
     input:
-        fasta=f"{config['reference']['fasta']}",
-        fai=f"{config['reference']['fasta']}.fai",
-        bed=f"{config['reference']['fasta']}.{{regions}}.bed",
+        fasta=f"{config['reference']['pf15']['fasta']}",
+        fai=f"{config['reference']['pf15']['fasta']}.fai",
+        bed=f"{config['reference']['pf15']['fasta']}.{{regions}}.bed",
     output:
-        fasta=f"{config['reference']['fasta']}.{{regions}}.fasta",
+        fasta=f"{config['reference']['pf15']['fasta']}.{{regions}}.fasta",
     conda:
         "../envs/bedtools.yaml"
     log:
