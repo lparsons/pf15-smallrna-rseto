@@ -32,9 +32,12 @@ rule gtf_to_gene_transcripts:
     log:
         "logs/celegans-gtf-to-genes-transcipts.log",
     conda:
-        "../envs/coreutils.yaml"
+        "../envs/gffread.yaml"
     shell:
-        'gffread {input:q} --table "@geneid, transcript_id" -o {output:q} 2> {log:q}'
+        """
+        echo "gene_id\ttranscript_id\n" > {output:q} 2> {log:q}
+        gffread {input:q} --table "@geneid, transcript_id" >> {output:q} 2>> {log:q}
+        """
 
 
 # rule star_index:
@@ -92,6 +95,8 @@ rule samtools_faidx:
 #         "../envs/genmap.yaml"
 #     shell:
 #         """
+
+
 #         genmap index --fasta-file {input.fasta:q} --index {output.idx:q} &> {log:q}
 #         """
 #
