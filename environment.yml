@@ -7,3 +7,4 @@ dependencies:
     - snakemake>=8.10
     - snakefmt>=0.10
     - snakemake-storage-plugin-http>=0.2.3
+    - snakemake-executor-plugin-slurm>=0.4.5

@@ -46,7 +46,7 @@ rule sort_tsv_with_header:
         "../envs/coreutils.yaml"
     shell:
         """
-        cat {input:q} | (read -r; printf "%s\n" "$REPLY"; LC_ALL=C sort -k {wildcards.colnum}b,{wildcards.colnum} ) > {output:q} 2> {log:q}
+        cat {input:q} | (read -r; printf "%s\n" "$REPLY"; LC_ALL=C sort -k {wildcards.colnum}b,{wildcards.colnum}) > {output:q} 2> {log:q}
         """
 
 
