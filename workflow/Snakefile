@@ -53,9 +53,19 @@ rule all:
             min_pct_id=config["params"]["blast"]["min_pct_id"],
             expression=["neuron", "neuron-germline"],
         ),
-        qc=expand(
+        expand(
             "results/trimmed/{unit.sample_name}-{unit.unit_name}.qc.txt",
             unit=units.itertuples(),
+        ),
+        expand(
+            "results/aligned-{genome}/{unit.sample_name}-{unit.unit_name}/Aligned.sortedByCoord.out.bam.bai",
+            unit=units.itertuples(),
+            genome="pf15",
+        ),
+        expand(
+            "results/aligned-{genome}/{unit.sample_name}-{unit.unit_name}-samtools-stats.txt",
+            unit=units.itertuples(),
+            genome="pf15",
         ),
 
 
@@ -65,6 +75,7 @@ rule all_genome:
         f"{config['reference']['pf15']['fasta']}.intergenic-regions.fasta",
         "results/homology/blast-pf15-intergenic-regions-celegans-transcripts.tsv",
         "results/celegans-genes-transcipts.tsv",
+        "resources/pf15-star-genome",
 
 
 rule all_blast:
@@ -98,9 +109,29 @@ rule all_trim:
 
 rule all_qc:
     input:
-        qc=expand(
+        expand(
             "results/trimmed/{unit.sample_name}-{unit.unit_name}.qc.txt",
             unit=units.itertuples(),
+        ),
+        expand(
+            "results/aligned-{genome}/{unit.sample_name}-{unit.unit_name}-samtools-stats.txt",
+            unit=units.itertuples(),
+            genome="pf15",
+        ),
+
+
+rule all_align:
+    input:
+        "resources/pf15-star-genome",
+        expand(
+            "results/aligned-{genome}/{unit.sample_name}-{unit.unit_name}/Aligned.sortedByCoord.out.bam",
+            unit=units.itertuples(),
+            genome="pf15",
+        ),
+        expand(
+            "results/aligned-{genome}/{unit.sample_name}-{unit.unit_name}/Aligned.sortedByCoord.out.bam.bai",
+            unit=units.itertuples(),
+            genome="pf15",
         ),
 
 
@@ -265,7 +296,6 @@ rule all_qc:
 #
 #
 # ##### load rules #####
-# include: "rules/align.smk"
 # include: "rules/signal.smk"
 # include: "rules/counts.smk"
 # include: "rules/window_counts.smk"
@@ -280,3 +310,4 @@ include: "rules/genome.smk"
 include: "rules/blast.smk"
 include: "rules/trim.smk"
 include: "rules/fastqc.smk"
+include: "rules/align.smk"

@@ -40,19 +40,21 @@ rule gtf_to_gene_transcripts:
         """
 
 
-# rule star_index:
-#     input:
-#         fasta=config["reference"]["fasta"],
-#     output:
-#         directory("resources/star_genome"),
-#     threads: 4
-#     params:
-#         extra=config["params"]["star_index"],
-#     log:
-#         "logs/star_index_genome.log",
-#     cache: True
-#     wrapper:
-#         "v3.0.2/bio/star/index"
+rule star_index_pf15:
+    input:
+        fasta=config["reference"]["pf15"]["fasta"],
+    output:
+        directory("resources/pf15-star-genome"),
+    threads: 4
+    params:
+        extra=config["params"]["star_index"],
+    log:
+        "logs/star-index-pf15-genome.log",
+    cache: True
+    wrapper:
+        "v3.10.2/bio/star/index"
+
+
 #
 #
 # rule gff_to_gtf:
