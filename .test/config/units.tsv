@@ -1,0 +1,3 @@
+sample_name	unit_name	fq1	fq2
+sample-a	rep1	resources/fastq/sample-a.fastq.gz
+sample-b	rep1	resources/fastq/sample-b.fastq.gz

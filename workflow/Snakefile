@@ -16,18 +16,27 @@ configfile: "config/config.yaml"
 validate(config, schema="schemas/config.schema.yaml")
 
 
-# samples = pd.read_table(config["samples"]).set_index("sample_name", drop=False)
-# validate(samples, schema="schemas/samples.schema.yaml")
-#
-# units = pd.read_table(config["units"], dtype=str).set_index(
-#     ["sample_name", "unit_name"], drop=False
-# )
-# units.index = units.index.set_levels(
-#     [i.astype(str) for i in units.index.levels]
-# )  # enforce str in index
-# validate(units, schema="schemas/units.schema.yaml")
-#
-#
+samples = (
+    pd.read_csv(config["samples"], sep="\t", dtype={"sample_name": str})
+    .set_index("sample_name", drop=False)
+    .sort_index()
+)
+validate(samples, schema="schemas/samples.schema.yaml")
+
+
+units = (
+    pd.read_csv(config["units"], sep="\t", dtype={"sample_name": str, "unit_name": str})
+    .set_index(["sample_name", "unit_name"], drop=False)
+    .sort_index()
+)
+validate(units, schema="schemas/units.schema.yaml")
+
+
+wildcard_constraints:
+    sample="|".join(samples["sample_name"]),
+    unit="|".join(units["unit_name"]),
+
+
 # wildcard_constraints:
 #     contrast="[^\/]*",
 #
@@ -44,6 +53,20 @@ rule all:
             min_pct_id=config["params"]["blast"]["min_pct_id"],
             expression=["neuron", "neuron-germline"],
         ),
+        expand(
+            "results/trimmed/{unit.sample_name}-{unit.unit_name}.qc.txt",
+            unit=units.itertuples(),
+        ),
+        expand(
+            "results/aligned-{genome}/{unit.sample_name}-{unit.unit_name}/Aligned.sortedByCoord.out.bam.bai",
+            unit=units.itertuples(),
+            genome="pf15",
+        ),
+        expand(
+            "results/aligned-{genome}/{unit.sample_name}-{unit.unit_name}-samtools-stats.txt",
+            unit=units.itertuples(),
+            genome="pf15",
+        ),
 
 
 rule all_genome:
@@ -52,6 +75,7 @@ rule all_genome:
         f"{config['reference']['pf15']['fasta']}.intergenic-regions.fasta",
         "results/homology/blast-pf15-intergenic-regions-celegans-transcripts.tsv",
         "results/celegans-genes-transcipts.tsv",
+        "resources/pf15-star-genome",
 
 
 rule all_blast:
@@ -72,6 +96,42 @@ rule all_blast:
             min_length=config["params"]["blast"]["min_length"],
             min_pct_id=config["params"]["blast"]["min_pct_id"],
             expression=["neuron", "neuron-germline"],
+        ),
+
+
+rule all_trim:
+    input:
+        expand(
+            "results/trimmed/{unit.sample_name}-{unit.unit_name}.fastq.gz",
+            unit=units.itertuples(),
+        ),
+
+
+rule all_qc:
+    input:
+        expand(
+            "results/trimmed/{unit.sample_name}-{unit.unit_name}.qc.txt",
+            unit=units.itertuples(),
+        ),
+        expand(
+            "results/aligned-{genome}/{unit.sample_name}-{unit.unit_name}-samtools-stats.txt",
+            unit=units.itertuples(),
+            genome="pf15",
+        ),
+
+
+rule all_align:
+    input:
+        "resources/pf15-star-genome",
+        expand(
+            "results/aligned-{genome}/{unit.sample_name}-{unit.unit_name}/Aligned.sortedByCoord.out.bam",
+            unit=units.itertuples(),
+            genome="pf15",
+        ),
+        expand(
+            "results/aligned-{genome}/{unit.sample_name}-{unit.unit_name}/Aligned.sortedByCoord.out.bam.bai",
+            unit=units.itertuples(),
+            genome="pf15",
         ),
 
 
@@ -236,9 +296,6 @@ rule all_blast:
 #
 #
 # ##### load rules #####
-# include: "rules/fastqc.smk"
-# include: "rules/trim.smk"
-# include: "rules/align.smk"
 # include: "rules/signal.smk"
 # include: "rules/counts.smk"
 # include: "rules/window_counts.smk"
@@ -251,3 +308,6 @@ rule all_blast:
 
 include: "rules/genome.smk"
 include: "rules/blast.smk"
+include: "rules/trim.smk"
+include: "rules/fastqc.smk"
+include: "rules/align.smk"

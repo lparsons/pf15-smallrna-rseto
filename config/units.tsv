@@ -1,0 +1,9 @@
+sample_name	unit_name	fq1	fq2
+R1_undiluted_PF15_sRNA	rep1	resources/fastq/GCF-RS-8179/2836__R1_undiluted_PF15_sRNA_library-read-1.fastq.gz
+R2_undiluted_PF15_sRNA	rep1	resources/fastq/GCF-RS-8179/2836__R2_undiluted_PF15_sRNA_library-read-1.fastq.gz
+R3_undiluted_PF15_sRNA	rep1	resources/fastq/GCF-RS-8179/2836__R3_undiluted_PF15_sRNA_library-read-1.fastq.gz
+Pf15_25Cplate_exp1	rep1	resources/fastq/GCF-RB-4688/1617__Pf15_25Cplate_exp1_library-read-1.fastq.gz
+Pf15_25Cplate_exp1.1	rep1	resources/fastq/GCF-RB-4688/1617__Pf15_25Cplate_exp1.1_library-read-1.fastq.gz
+Pf15_25Cplate_exp4	rep1	resources/fastq/GCF-RB-4688/1617__Pf15_25Cplate_exp4_library-read-1.fastq.gz
+Pf15_25Cplate_exp7	rep1	resources/fastq/GCF-RB-4688/1617__Pf15_25Cplate_exp7_library-read-1.fastq.gz
+Pf15_25Cplate_exp7.1	rep1	resources/fastq/GCF-RB-4688/1617__Pf15_25Cplate_exp7.1_library-read-1.fastq.gz
