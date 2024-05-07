@@ -132,6 +132,8 @@ properties:
           - blastn
           - min_length
           - min_pct_id
+      min_coverage:
+        type: string
       genmap:
         type: string
       genmap_index:
@@ -143,6 +145,7 @@ properties:
       - feature_counts
       - genome_window_counts
       - blast
+      - min_coverage
       - genmap
       - genmap_index
 

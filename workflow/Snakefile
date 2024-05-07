@@ -23,7 +23,6 @@ samples = (
 )
 validate(samples, schema="schemas/samples.schema.yaml")
 
-
 units = (
     pd.read_csv(config["units"], sep="\t", dtype={"sample_name": str, "unit_name": str})
     .set_index(["sample_name", "unit_name"], drop=False)
@@ -52,6 +51,7 @@ rule all:
             unit=units.itertuples(),
             genome="pf15",
         ),
+        "results/aligned-pf15-coverage/putative-smallrna-regions.bed",
         "results/qc/multiqc.html",
 
 
@@ -120,6 +120,22 @@ rule all_align:
             unit=units.itertuples(),
             genome="pf15",
         ),
+
+
+rule all_coverage:
+    input:
+        expand(
+            "results/aligned-{genome}-coverage/{unit.sample_name}-{unit.unit_name}-genomecov.bedgraph",
+            unit=units.itertuples(),
+            genome="pf15",
+        ),
+        expand(
+            "results/aligned-{genome}-coverage/{unit.sample_name}-{unit.unit_name}-genomecov-min{threshold}.bedgraph",
+            unit=units.itertuples(),
+            genome="pf15",
+            threshold=config["params"]["min_coverage"],
+        ),
+        "results/aligned-pf15-coverage/putative-smallrna-regions.bed",
 
 
 #     input:
@@ -298,3 +314,4 @@ include: "rules/trim.smk"
 include: "rules/fastqc.smk"
 include: "rules/align.smk"
 include: "rules/multiqc.smk"
+include: "rules/coverage.smk"

@@ -51,5 +51,6 @@ params:
     blastn: ""
     min_length: "16"
     min_pct_id: "100"
+  min_coverage: "1"
   genmap: "--errors 2"
   genmap_index: ""
