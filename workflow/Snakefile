@@ -52,6 +52,11 @@ rule all:
             unit=units.itertuples(),
             genome="pf15",
         ),
+        expand(
+            "results/aligned-{genome}-coverage/{unit.sample_name}-{unit.unit_name}-genomecov.bedgraph",
+            unit=units.itertuples(),
+            genome="pf15",
+        ),
         "results/qc/multiqc.html",
 
 
@@ -117,6 +122,15 @@ rule all_align:
         ),
         expand(
             "results/aligned-{genome}/{unit.sample_name}-{unit.unit_name}/Aligned.sortedByCoord.out.bam.bai",
+            unit=units.itertuples(),
+            genome="pf15",
+        ),
+
+
+rule all_coverage:
+    input:
+        expand(
+            "results/aligned-{genome}-coverage/{unit.sample_name}-{unit.unit_name}-genomecov.bedgraph",
             unit=units.itertuples(),
             genome="pf15",
         ),
@@ -298,3 +312,4 @@ include: "rules/trim.smk"
 include: "rules/fastqc.smk"
 include: "rules/align.smk"
 include: "rules/multiqc.smk"
+include: "rules/coverage.smk"
