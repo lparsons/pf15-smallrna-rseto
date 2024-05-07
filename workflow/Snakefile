@@ -48,25 +48,11 @@ wildcard_constraints:
 rule all:
     input:
         expand(
-            "results/homology/blast-pf15-intergenic-regions-celegans-transcripts-{min_length}-bp-{min_pct_id}-pctid-genes-expressed-{expression}.tsv",
-            min_length=config["params"]["blast"]["min_length"],
-            min_pct_id=config["params"]["blast"]["min_pct_id"],
-            expression=["neuron", "neuron-germline"],
-        ),
-        expand(
-            "results/trimmed/{unit.sample_name}-{unit.unit_name}.qc.txt",
-            unit=units.itertuples(),
-        ),
-        expand(
             "results/aligned-{genome}/{unit.sample_name}-{unit.unit_name}/Aligned.sortedByCoord.out.bam.bai",
             unit=units.itertuples(),
             genome="pf15",
         ),
-        expand(
-            "results/aligned-{genome}/{unit.sample_name}-{unit.unit_name}-samtools-stats.txt",
-            unit=units.itertuples(),
-            genome="pf15",
-        ),
+        "results/qc/multiqc.html",
 
 
 rule all_genome:
@@ -118,6 +104,7 @@ rule all_qc:
             unit=units.itertuples(),
             genome="pf15",
         ),
+        "results/qc/multiqc.html",
 
 
 rule all_align:
@@ -303,7 +290,6 @@ rule all_align:
 # include: "rules/diffexp.smk"
 # include: "rules/diffexp_windows.smk"
 # include: "rules/diffexp_significant_regions.smk"
-# include: "rules/multiqc.smk"
 
 
 include: "rules/genome.smk"
@@ -311,3 +297,4 @@ include: "rules/blast.smk"
 include: "rules/trim.smk"
 include: "rules/fastqc.smk"
 include: "rules/align.smk"
+include: "rules/multiqc.smk"

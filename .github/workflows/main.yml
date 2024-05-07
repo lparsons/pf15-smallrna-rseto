@@ -48,12 +48,14 @@ jobs:
         stagein: |
           pip install snakemake-storage-plugin-http
           conda config --set channel_priority strict
-        args: "--use-conda --show-failed-logs --cores 3 --conda-cleanup-pkgs cache --all-temp"
+        args: "--use-conda --show-failed-logs --cores 3 --conda-cleanup-pkgs cache"
 
     - name: Test report
       uses: snakemake/snakemake-github-action@v1
       with:
         directory: .test
         snakefile: workflow/Snakefile
-        stagein: "pip install snakemake-storage-plugin-http"
+        stagein: |
+          pip install snakemake-storage-plugin-http
+          conda config --set channel_priority strict
         args: "--report report.zip"

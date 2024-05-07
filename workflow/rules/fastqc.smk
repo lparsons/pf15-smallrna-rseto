@@ -1,6 +1,6 @@
 rule fastqc:
     input:
-        fastq="results/trimmed/{sample}-{unit}.fastq.gz",
+        fastq="results/fastq/{sample}-{unit}.fastq.gz",
     output:
         html="results/qc/fastqc/{sample}-{unit}.html",
         zip="results/qc/fastqc/{sample}-{unit}_fastqc.zip",  # the suffix _fastqc.zip is necessary for multiqc to find the file. If not using multiqc, you are free to choose an arbitrary filename
