@@ -33,7 +33,11 @@ rule pf15_all_coverage:
             threshold=config["params"]["min_coverage"],
         ),
     output:
-        "results/aligned-{genome}-coverage/putative-smallrna-regions.bed",
+        report(
+            "results/aligned-{genome}-coverage/putative-smallrna-regions.bed",
+            caption="../report/putative-smallrna.rst",
+            category="putative small RNAs",
+        ),
     log:
         "logs/aligned-{genome}-coverage/putative-smallrna-regions.log",
     params:

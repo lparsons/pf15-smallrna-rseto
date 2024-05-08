@@ -36,13 +36,10 @@ wildcard_constraints:
     unit="|".join(units["unit_name"]),
 
 
-# wildcard_constraints:
-#     contrast="[^\/]*",
-#
-#
-# # ruleorder: get_fasta > diffexp_windows
-#
-#
+# Report overview
+report: "report/workflow.rst"
+
+
 ##### target rules #####
 rule all:
     input:
