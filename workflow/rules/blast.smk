@@ -55,7 +55,11 @@ rule annotate_homology:
         homologous_regions="results/homology/blast-pf15-intergenic-regions-celegans-transcripts-{minlen}-bp-{minpctid}-pctid.sorted-col2.tsv",
         genes_transcripts="results/celegans-genes-transcipts.sorted-col2.tsv",
     output:
-        "results/homology/blast-pf15-intergenic-regions-celegans-transcripts-{minlen}-bp-{minpctid}-pctid-genes.tsv",
+        report(
+            "results/homology/blast-pf15-intergenic-regions-celegans-transcripts-{minlen}-bp-{minpctid}-pctid-genes.tsv",
+            caption="../report/homology.rst",
+            category="homology",
+        ),
     log:
         "logs/homology/blast-pf15-intergenic-regions-celegans-transcripts-{minlen}-bp-{minpctid}-pctid-genes.log",
     conda:
@@ -71,7 +75,11 @@ rule filter_homology_by_gene:
         homologous_regions="results/homology/blast-pf15-intergenic-regions-celegans-transcripts-{minlen}-bp-{minpctid}-pctid-genes.sorted-col13.tsv",
         gene_list="resources/{expression}-expressed-genes.sorted-col1.tsv",
     output:
-        "results/homology/blast-pf15-intergenic-regions-celegans-transcripts-{minlen}-bp-{minpctid}-pctid-genes-expressed-{expression}.tsv",
+        report(
+            "results/homology/blast-pf15-intergenic-regions-celegans-transcripts-{minlen}-bp-{minpctid}-pctid-genes-expressed-{expression}.tsv",
+            caption="../report/homology-expressed.rst",
+            category="{expression}",
+        ),
     log:
         "logs/homology/blast-pf15-intergenic-regions-celegans-transcripts-{minlen}-bp-{minpctid}-pctid-genes-expressed-{expression}.log",
     conda:
