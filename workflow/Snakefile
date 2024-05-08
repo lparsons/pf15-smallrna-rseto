@@ -51,6 +51,12 @@ rule all:
             unit=units.itertuples(),
             genome="pf15",
         ),
+        expand(
+            "results/homology-overlap/homology-{min_length}-bp-{min_pct_id}-pctid-genes-expressed-{expression}-overlap-putative-smallrna-downreg.bed",
+            min_length=config["params"]["blast"]["min_length"],
+            min_pct_id=config["params"]["blast"]["min_pct_id"],
+            expression=["neuron", "neuron-germline"],
+        ),
         "results/aligned-pf15-coverage/putative-smallrna-regions.bed",
         "results/qc/multiqc.html",
 
@@ -79,6 +85,12 @@ rule all_blast:
         ),
         expand(
             "results/homology/blast-pf15-intergenic-regions-celegans-transcripts-{min_length}-bp-{min_pct_id}-pctid-genes-expressed-{expression}.tsv",
+            min_length=config["params"]["blast"]["min_length"],
+            min_pct_id=config["params"]["blast"]["min_pct_id"],
+            expression=["neuron", "neuron-germline"],
+        ),
+        expand(
+            "results/homology/blast-pf15-intergenic-regions-celegans-transcripts-{min_length}-bp-{min_pct_id}-pctid-genes-expressed-{expression}.bed",
             min_length=config["params"]["blast"]["min_length"],
             min_pct_id=config["params"]["blast"]["min_pct_id"],
             expression=["neuron", "neuron-germline"],
@@ -136,6 +148,22 @@ rule all_coverage:
             threshold=config["params"]["min_coverage"],
         ),
         "results/aligned-pf15-coverage/putative-smallrna-regions.bed",
+
+
+rule all_homology_overlap:
+    input:
+        expand(
+            "results/homology-overlap/homology-{min_length}-bp-{min_pct_id}-pctid-genes-expressed-{expression}-overlap-putative-smallrna.bed",
+            min_length=config["params"]["blast"]["min_length"],
+            min_pct_id=config["params"]["blast"]["min_pct_id"],
+            expression=["neuron", "neuron-germline"],
+        ),
+        expand(
+            "results/homology-overlap/homology-{min_length}-bp-{min_pct_id}-pctid-genes-expressed-{expression}-overlap-putative-smallrna-downreg.bed",
+            min_length=config["params"]["blast"]["min_length"],
+            min_pct_id=config["params"]["blast"]["min_pct_id"],
+            expression=["neuron", "neuron-germline"],
+        ),
 
 
 #     input:
@@ -315,3 +343,4 @@ include: "rules/fastqc.smk"
 include: "rules/align.smk"
 include: "rules/multiqc.smk"
 include: "rules/coverage.smk"
+include: "rules/homology-overlap.smk"

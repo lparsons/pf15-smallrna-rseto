@@ -30,18 +30,18 @@ rule filter_homology:
         "../envs/coreutils.yaml"
     shell:
         """
-        echo -e "qseqid\tsseqid\tpident\tlength\tmismatch\tgapopen\tqstart\tqend\tsstart\tsend\tevalue\tbitscore" > {output:q} 2> {log:q}
-        awk '$3 >= {wildcards.minpctid} && $4 >= {wildcards.minlen} {{print $0}}' {input:q} >> {output:q} 2>> {log:q}
+        echo -e "qseqid\\tsseqid\\tpident\\tlength\\tmismatch\\tgapopen\\tqstart\\tqend\\tsstart\\tsend\\tevalue\\tbitscore" > {output:q} 2> {log:q}
+        awk 'BEGIN{{FS="\\t"; OFS=FS}} $3 >= {wildcards.minpctid} && $4 >= {wildcards.minlen} {{print $0}}' {input:q} >> {output:q} 2>> {log:q}
         """
 
 
 rule sort_tsv_with_header:
     input:
-        "{file}.tsv",
+        "{file}.{ext}",
     output:
-        "{file}.sorted-col{colnum}.tsv",
+        "{file}.sorted-col{colnum}.{ext}",
     log:
-        "logs/{file}.sorted-col{colnum}.log",
+        "logs/{file}.sorted-col{colnum}.{ext}.log",
     conda:
         "../envs/coreutils.yaml"
     shell:
@@ -55,14 +55,18 @@ rule annotate_homology:
         homologous_regions="results/homology/blast-pf15-intergenic-regions-celegans-transcripts-{minlen}-bp-{minpctid}-pctid.sorted-col2.tsv",
         genes_transcripts="results/celegans-genes-transcipts.sorted-col2.tsv",
     output:
-        "results/homology/blast-pf15-intergenic-regions-celegans-transcripts-{minlen}-bp-{minpctid}-pctid-genes.tsv",
+        report(
+            "results/homology/blast-pf15-intergenic-regions-celegans-transcripts-{minlen}-bp-{minpctid}-pctid-genes.tsv",
+            caption="../report/homology.rst",
+            category="homology",
+        ),
     log:
         "logs/homology/blast-pf15-intergenic-regions-celegans-transcripts-{minlen}-bp-{minpctid}-pctid-genes.log",
     conda:
         "../envs/coreutils.yaml"
     shell:
         """
-        LC_ALL=C join --header -j2 {input.homologous_regions:q} {input.genes_transcripts:q} > {output:q} 2>> {log:q}
+        LC_ALL=C join -t $'\\t' --header -j2 {input.homologous_regions:q} {input.genes_transcripts:q} > {output:q} 2>> {log:q}
         """
 
 
@@ -71,15 +75,32 @@ rule filter_homology_by_gene:
         homologous_regions="results/homology/blast-pf15-intergenic-regions-celegans-transcripts-{minlen}-bp-{minpctid}-pctid-genes.sorted-col13.tsv",
         gene_list="resources/{expression}-expressed-genes.sorted-col1.tsv",
     output:
-        "results/homology/blast-pf15-intergenic-regions-celegans-transcripts-{minlen}-bp-{minpctid}-pctid-genes-expressed-{expression}.tsv",
+        report(
+            "results/homology/blast-pf15-intergenic-regions-celegans-transcripts-{minlen}-bp-{minpctid}-pctid-genes-expressed-{expression}.tsv",
+            caption="../report/homology-expressed.rst",
+            category="{expression}",
+        ),
     log:
         "logs/homology/blast-pf15-intergenic-regions-celegans-transcripts-{minlen}-bp-{minpctid}-pctid-genes-expressed-{expression}.log",
     conda:
         "../envs/coreutils.yaml"
     shell:
         """
-        LC_ALL=C join --header -1 1 -2 13 {input.gene_list:q} {input.homologous_regions:q} > {output:q} 2>> {log:q}
+        LC_ALL=C join -t $'\\t' --header -1 1 -2 13 {input.gene_list:q} {input.homologous_regions:q} > {output:q} 2>> {log:q}
         """
+
+
+rule homology_to_bed:
+    input:
+        "results/homology/blast-pf15-intergenic-regions-celegans-transcripts-{minlen}-bp-{minpctid}-pctid-genes-expressed-{expression}.tsv",
+    output:
+        "results/homology/blast-pf15-intergenic-regions-celegans-transcripts-{minlen}-bp-{minpctid}-pctid-genes-expressed-{expression}.bed",
+    log:
+        "results/homology/blast-pf15-intergenic-regions-celegans-transcripts-{minlen}-bp-{minpctid}-pctid-genes-expressed-{expression}-bed.log",
+    conda:
+        "../envs/python.yaml"
+    script:
+        "../scripts/blast-to-bed.py"
 
 
 # rule get_fasta:
