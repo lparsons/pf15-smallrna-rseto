@@ -52,7 +52,7 @@ rule all:
             genome="pf15",
         ),
         expand(
-            "results/homology-overlap/homology-{min_length}-bp-{min_pct_id}-pctid-genes-expressed-{expression}-overlap-putative-smallrna.bed",
+            "results/homology-overlap/homology-{min_length}-bp-{min_pct_id}-pctid-genes-expressed-{expression}-overlap-putative-smallrna-downreg.bed",
             min_length=config["params"]["blast"]["min_length"],
             min_pct_id=config["params"]["blast"]["min_pct_id"],
             expression=["neuron", "neuron-germline"],
@@ -154,6 +154,12 @@ rule all_homology_overlap:
     input:
         expand(
             "results/homology-overlap/homology-{min_length}-bp-{min_pct_id}-pctid-genes-expressed-{expression}-overlap-putative-smallrna.bed",
+            min_length=config["params"]["blast"]["min_length"],
+            min_pct_id=config["params"]["blast"]["min_pct_id"],
+            expression=["neuron", "neuron-germline"],
+        ),
+        expand(
+            "results/homology-overlap/homology-{min_length}-bp-{min_pct_id}-pctid-genes-expressed-{expression}-overlap-putative-smallrna-downreg.bed",
             min_length=config["params"]["blast"]["min_length"],
             min_pct_id=config["params"]["blast"]["min_pct_id"],
             expression=["neuron", "neuron-germline"],

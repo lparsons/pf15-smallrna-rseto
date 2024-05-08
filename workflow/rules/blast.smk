@@ -37,11 +37,11 @@ rule filter_homology:
 
 rule sort_tsv_with_header:
     input:
-        "{file}.tsv",
+        "{file}.{ext}",
     output:
-        "{file}.sorted-col{colnum}.tsv",
+        "{file}.sorted-col{colnum}.{ext}",
     log:
-        "logs/{file}.sorted-col{colnum}.log",
+        "logs/{file}.sorted-col{colnum}.{ext}.log",
     conda:
         "../envs/coreutils.yaml"
     shell:
