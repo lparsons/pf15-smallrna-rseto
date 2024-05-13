@@ -14,6 +14,25 @@ rule homology_overlap:
         "v3.10.2/bio/bedtools/intersect"
 
 
+rule homology_overlap_genelist:
+    input:
+        "results/homology-overlap/homology-{min_length}-bp-{min_pct_id}-pctid-genes-expressed-{expression}-overlap-putative-smallrna.bed",
+    output:
+        report(
+            "results/homology-overlap/homology-{min_length}-bp-{min_pct_id}-pctid-genes-expressed-{expression}-overlap-putative-smallrna.unique-genes.txt",
+            caption="../report/homology-overlap-genelist.rst",
+            category="{expression}",
+        ),
+    log:
+        "logs/homology-overlap/homology-{min_length}-bp-{min_pct_id}-pctid-genes-expressed-{expression}-overlap-putative-smallrna.unique-genes.log",
+    conda:
+        "../envs/coreutils.yaml"
+    shell:
+        """
+        awk '{{print $4}}' {input:q} | LC_ALL=C sort | uniq -c > {output:q} 2> {log:q}
+        """
+
+
 rule homology_overlap_downreg:
     input:
         homology_regions="results/homology-overlap/homology-{min_length}-bp-{min_pct_id}-pctid-genes-expressed-{expression}-overlap-putative-smallrna.sorted-col4.bed",
@@ -31,4 +50,23 @@ rule homology_overlap_downreg:
     shell:
         """
         LC_ALL=C join -t $'\\t' --header -1 4 -2 1 {input.homology_regions:q} {input.downreg_genes:q} > {output:q} 2>> {log:q}
+        """
+
+
+rule homology_overlap_downreg_genelist:
+    input:
+        "results/homology-overlap/homology-{min_length}-bp-{min_pct_id}-pctid-genes-expressed-{expression}-overlap-putative-smallrna-downreg.bed",
+    output:
+        report(
+            "results/homology-overlap/homology-{min_length}-bp-{min_pct_id}-pctid-genes-expressed-{expression}-overlap-putative-smallrna-downreg.unique-genes.txt",
+            caption="../report/homology-overlap-downreg-genelist.rst",
+            category="{expression}",
+        ),
+    log:
+        "logs/homology-overlap/homology-{min_length}-bp-{min_pct_id}-pctid-genes-expressed-{expression}-overlap-putative-smallrna-downreg.unique-genes.log",
+    conda:
+        "../envs/coreutils.yaml"
+    shell:
+        """
+        awk '{{print $1}}' {input:q} | LC_ALL=C sort | uniq -c > {output:q} 2> {log:q}
         """
