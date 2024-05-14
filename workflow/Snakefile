@@ -57,26 +57,7 @@ rule all:
         "results/aligned-pf15-coverage/putative-smallrna-regions.bed",
         "results/qc/multiqc.html",
         expand(
-            "results/homology/blast-pf15-intergenic-regions-celegans-transcripts-{min_length}-bp-{min_pct_id}-pctid-genes.unique-genes.txt",
-            min_length=config["params"]["blast"]["min_length"],
-            min_pct_id=config["params"]["blast"]["min_pct_id"],
-        ),
-        expand(
-            "results/homology/blast-pf15-intergenic-regions-celegans-transcripts-{min_length}-bp-{min_pct_id}-pctid-genes-expressed-{expression}.unique-genes.txt",
-            min_length=config["params"]["blast"]["min_length"],
-            min_pct_id=config["params"]["blast"]["min_pct_id"],
-            expression=["neuron", "neuron-germline"],
-        ),
-        expand(
-            "results/homology-overlap/homology-{min_length}-bp-{min_pct_id}-pctid-genes-expressed-{expression}-overlap-putative-smallrna.unique-genes.txt",
-            min_length=config["params"]["blast"]["min_length"],
-            min_pct_id=config["params"]["blast"]["min_pct_id"],
-            expression=["neuron", "neuron-germline"],
-        ),
-        expand(
-            "results/homology-overlap/homology-{min_length}-bp-{min_pct_id}-pctid-genes-expressed-{expression}-overlap-putative-smallrna-downreg.unique-genes.txt",
-            min_length=config["params"]["blast"]["min_length"],
-            min_pct_id=config["params"]["blast"]["min_pct_id"],
+            "results/summary/genelist-summary-{expression}.txt",
             expression=["neuron", "neuron-germline"],
         ),
 
@@ -234,3 +215,4 @@ include: "rules/align.smk"
 include: "rules/multiqc.smk"
 include: "rules/coverage.smk"
 include: "rules/homology-overlap.smk"
+include: "rules/summary.smk"
