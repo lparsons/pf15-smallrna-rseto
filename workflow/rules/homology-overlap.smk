@@ -10,6 +10,8 @@ rule homology_overlap:
         ),
     log:
         "logs/homology-overlap/homology-{min_length}-bp-{min_pct_id}-pctid-genes-expressed-{expression}-overlap-putative-smallrna.log",
+    params:
+        extra="-f 1.0",
     wrapper:
         "v3.10.2/bio/bedtools/intersect"
 

@@ -20,12 +20,17 @@ def blast_to_bed(blast_input, bed_output):
             for row in tsv_file:
                 region = row["qseqid"]
                 (chrom, positions) = region.split(":")
-                (start, end) = positions.split("-")
+                (qseq_start, qseq_end) = positions.split("-")
+                qstart = int(row["qstart"])
+                qend = int(row["qend"])
+                offset = int(qseq_start) - 1
+                start = qstart + offset
+                end = qend + offset
                 writer.writerow(
                     {
                         "chrom": chrom,
-                        "start": int(start),
-                        "end": int(end),
+                        "start": start - 1,
+                        "end": end,
                         "WormBase Gene ID": row["WormBase Gene ID"],
                         "WormBase Transcript ID": row["sseqid"],
                     }
