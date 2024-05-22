@@ -34,17 +34,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 * update release-please config ([a3dfbe3](https://github.com/lparsons/pf15-smallrna-rseto/commit/a3dfbe3f2d1a0871a7d68f0fae4c26521a8ecdf4))
 * update test files to ensure final results ([5e97050](https://github.com/lparsons/pf15-smallrna-rseto/commit/5e970502354fd8a5a9145117099f988270cf126b))
 
-## [Unreleased]
-
-### Added
-
-- generate unique gene lists
-- add genelist summary
-
-### Fixed
-
-- correct coordinates used for small RNA overlap
-- ensure homologous region is entirely within putative small RNA
 
 ## [2024-05-08]
 
